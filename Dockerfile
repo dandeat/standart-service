@@ -7,6 +7,8 @@ RUN apk add --no-cache git
 
 # Set Working Directory
 RUN mkdir /app
+ADD . /app
+WORKDIR /app
 COPY . .
 
 # Do Your Magic Here
