@@ -19,7 +19,7 @@ COPY . .
 RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /app/main
 
 # Create Second Image
-FROM scratch
+FROM alpine:latest
 
 # Copy Binary File from Builder Image
 COPY --from=builder /app/main /main
