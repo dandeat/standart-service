@@ -4,9 +4,6 @@ LABEL maintainer="MKP Mobile Krenzzz <mkpproduction@gmail.com>"
 
 ENV GIT_TERMINAL_PROMPT=1 GO111MODULE=on CGO_ENABLED=0 GOOS=linux GOARCH=amd64
 
-# Install Git for Dependencies
-RUN apk add --no-cache git
-
 # Set Working Directory
 RUN mkdir -p /app
 ADD . /app
