@@ -1,12 +1,14 @@
 # Create Builder Image
-FROM golang:alpine AS builder
+FROM --platform=linux/amd64 golang:1.18 as builder
 LABEL maintainer="MKP Mobile Krenzzz <mkpproduction@gmail.com>"
+
+ENV GIT_TERMINAL_PROMPT=1 GO111MODULE=on CGO_ENABLED=0 GOOS=linux GOARCH=amd64
 
 # Install Git for Dependencies
 RUN apk add --no-cache git
 
 # Set Working Directory
-RUN mkdir /app
+RUN mkdir -p /app
 ADD . /app
 WORKDIR /app
 COPY . .
@@ -19,12 +21,16 @@ COPY . .
 RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /app/main
 
 # Create Second Image
-FROM alpine:latest
+FROM alpine:3.13.1
+
+RUN touch .env
+ENV TZ=Asia/Jakarta
+
+RUN apk add --no-cache tzdata
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Copy Binary File from Builder Image
-COPY --from=builder /app/main /main
-COPY --from=builder /app/.env /.env
-COPY --from=builder /app/key /key
+COPY --from=builder /app /
 
 # Run Binary File
 ENTRYPOINT ["/main"]
